@@ -20,6 +20,11 @@ message StoredGame {
     string turn = 2;
     string black = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
     string red = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+    uint64 start_time = 5;    // Unix timestamp for game start
+    uint64 end_time= 6;      // Unix timestamp for game end (0 if ongoing)
+    uint64 last_move = 7;     // Unix timestamp of last movedj
+    string game_status = 8;   // PENDING, ACTIVE, COMPLETED, FORFEIT
+    uint32 move_count = 9;    // Number of moves made in the game
   }
   message IndexedStoredGame {
     string index = 1;

@@ -53,6 +53,6 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 }
 
 // GetAuthority returns the module's authority.
-func (k Keeper) GetAuthority() string {
+func (k *Keeper) GetAuthority() string {
 	return k.authority
 }

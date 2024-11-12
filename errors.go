@@ -8,4 +8,5 @@ var (
 	ErrInvalidBlack     = errors.Register(ModuleName, 4, "black address is invalid: %s")
 	ErrInvalidRed       = errors.Register(ModuleName, 5, "red address is invalid: %s")
 	ErrGameNotParseable = errors.Register(ModuleName, 6, "game cannot be parsed")
+	ErrInvalidGame      = errors.Register(ModuleName, 7, "game validation failed: %s")
 )

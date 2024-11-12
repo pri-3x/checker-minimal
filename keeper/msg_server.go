@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"cosmossdk.io/collections"
 	"github.com/alice/checkers"
@@ -14,15 +15,15 @@ type msgServer struct {
 	k Keeper
 }
 
-var _ checkers.MsgServer = msgServer{}
+var _ checkers.CheckersTorramServer = msgServer{}
 
 // NewMsgServerImpl returns an implementation of the module MsgServer interface.
-func NewMsgServerImpl(keeper Keeper) checkers.MsgServer {
+func NewMsgServerImpl(keeper Keeper) checkers.CheckersTorramServer {
 	return &msgServer{k: keeper}
 }
 
 // CreateGame defines the handler for the MsgCreateGame message.
-func (ms msgServer) CreateGame(ctx context.Context, msg *checkers.MsgCreateGame) (*checkers.MsgCreateGameResponse, error) {
+func (ms msgServer) CheckersCreateGm(ctx context.Context, msg *checkers.ReqCheckersTorram) (*checkers.ResCheckersTorram, error) {
 	if length := len([]byte(msg.Index)); checkers.MaxIndexLength < length || length < 1 {
 		return nil, checkers.ErrIndexTooLong
 	}
@@ -31,11 +32,17 @@ func (ms msgServer) CreateGame(ctx context.Context, msg *checkers.MsgCreateGame)
 	}
 
 	newBoard := rules.New()
+	currentTime := uint64(time.Now().Unix())
 	storedGame := checkers.StoredGame{
-		Board: newBoard.String(),
-		Turn:  rules.PieceStrings[newBoard.Turn],
-		Black: msg.Black,
-		Red:   msg.Red,
+		Board:      newBoard.String(),
+		Turn:       rules.PieceStrings[newBoard.Turn],
+		Black:      msg.Black,
+		Red:        msg.Red,
+		StartTime:  currentTime,
+		EndTime:    0,
+		LastMove:   currentTime,
+		GameStatus: "ACTIVE",
+		MoveCount:  0,
 	}
 	if err := storedGame.Validate(); err != nil {
 		return nil, err
@@ -44,5 +51,9 @@ func (ms msgServer) CreateGame(ctx context.Context, msg *checkers.MsgCreateGame)
 		return nil, err
 	}
 
-	return &checkers.MsgCreateGameResponse{}, nil
+	return &checkers.ResCheckersTorram{
+		Index:         msg.Index,
+		GameStartTime: currentTime,
+		GameStatus:    "ACTIVE",
+	}, nil
 }

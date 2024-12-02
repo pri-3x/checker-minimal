@@ -1,3 +1,8 @@
+## Introduction
+
+- Checkers game build on top of Cosmos SDK
+
+
 ## Prerequisites
 
 - Go 1.21+
